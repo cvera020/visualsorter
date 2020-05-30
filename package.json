@@ -1,0 +1,27 @@
+{
+  "name": "webapp",
+  "version": "1.0.0",
+  "description": "Server configuration for \"webapp\" project",
+  "main": "server.js",
+  "author": "Carlos Vera: <c.v004@hotmail.com>",
+  "license": "ISC",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "mkdir dist && babel server -d dist --ignore /client --copy-files",
+    "start": "nodemon --exec babel-node server.js",
+    "client": "cd client && yarn start",
+    "dev": "concurrently \"yarn start\" \"yarn client\""
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.1",
+    "@babel/node": "^7.10.1",
+    "@babel/preset-env": "^7.10.1",
+    "concurrently": "^5.2.0",
+    "eslint": "^7.1.0",
+    "nodemon": "^2.0.4"
+  }
+}
