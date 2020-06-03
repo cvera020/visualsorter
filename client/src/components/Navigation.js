@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 //import axios from "axios";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
@@ -6,6 +7,8 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
+
+import { setElementCount, setAlgorithm } from "../actions/algorithmOptionsAction.js"
 
 class Navigation extends React.Component {
 	constructor(props) {
@@ -18,56 +21,27 @@ class Navigation extends React.Component {
 		};
 	}
 
-	/*
-	onChangeSearchString = evt => {
-		this.setState({
-			state_query: evt.target.value
-		});
-	};
-*/
-
 	render() {
 		return (
 			<div>
 				<Navbar bg="light" expand="lg">
-					<Navbar.Brand href="#home">Sort Visualizer</Navbar.Brand>
+					<Navbar.Brand href="#">Sort Visualizer</Navbar.Brand>
 					<Navbar.Toggle aria-controls="basic-navbar-nav" />
 					<Navbar.Collapse id="basic-navbar-nav">
-						<Nav className="mr-auto">
-							<Nav.Link href="#home">Home</Nav.Link>
-							<Nav.Link href="#link">Link</Nav.Link>
-							<NavDropdown title="Dropdown" id="basic-nav-dropdown">
-								<NavDropdown.Item href="#action/3.1">
-									Action
-								</NavDropdown.Item>
-								<NavDropdown.Item href="#action/3.2">
-									Another action
-								</NavDropdown.Item>
-								<NavDropdown.Item href="#action/3.3">
-									Something
-								</NavDropdown.Item>
-								<NavDropdown.Divider />
-								<NavDropdown.Item href="#action/3.4">
-									Separated link
-								</NavDropdown.Item>
-							</NavDropdown>
-						</Nav>
 						<Form inline>
-							<FormControl
-								type="text"
-								placeholder="Search"
-								className="mr-sm-2"
-							/>
-							<Form.Group controlId="exampleForm.SelectCustom">
-						    <Form.Control as="select" custom>
-						      <option>1</option>
-						      <option>2</option>
-						      <option>3</option>
-						      <option>4</option>
-						      <option>5</option>
-						    </Form.Control>
-					  	</Form.Group>
-							<Button variant="outline-success">Search</Button>
+							<Form.Label>Array length</Form.Label>
+							<Form.Control as="select" custom onChange={this.props.setElementCount}>
+								<option>10</option>
+								<option>50</option>
+								<option>100</option>
+								<option>1000</option>
+								<option>2000</option>
+							</Form.Control>
+							<Form.Label>Algorithm</Form.Label>
+							<Form.Control as="select" custom onChange={this.props.setAlgorithm}>
+								<option>Bubble Sort</option>
+								<option>Selection Sort</option>
+							</Form.Control>
 						</Form>
 					</Navbar.Collapse>
 				</Navbar>
@@ -76,4 +50,15 @@ class Navigation extends React.Component {
 	}
 }
 
-export default Navigation;
+function mapDispatchToProps(dispatch) {
+	return {
+		setElementCount: (evt) => {
+			dispatch(setElementCount(evt.target.value));
+		},
+		setAlgorithm: (evt) => {
+			dispatch(setAlgorithm(evt.target.value));
+		}
+	};
+};
+
+export default connect(null, mapDispatchToProps)(Navigation);
