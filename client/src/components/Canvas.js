@@ -3,17 +3,15 @@ import { connect } from "react-redux"
 import bubbleSort from "../algorithms/bubbleSort";
 
 import { execAlgorithm } from "../actions/algorithmOptionsAction.js";
+import constants from "../constants";
 
 class Canvas extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-
-    };
 
     this.updating = false;
-    this.sortSpeedMs = 20;
-
+    this.stopUpdating = false;
+    this.sortSpeedMs = this.calcSortingSpeed(constants.ALGO_SPEED_DEFAULT);
     this.numRectangles = 10;
     this.rectWidth = 0;
     this.dist = 0;
@@ -22,6 +20,7 @@ class Canvas extends Component {
     this.maxVal = 300;
     this.yStartPos = 20;
     this.canvasXPadding = 20;
+    this.yBase = 2;
   }
 
   calcRectangles = (n) => {
@@ -37,7 +36,7 @@ class Canvas extends Component {
     var newXVals = new Array();
     var newYVals = new Array();
     for (var i = 0; i < n; i++) {
-      newYVals.push(Math.floor(Math.random() * this.maxVal));
+      newYVals.push(Math.floor(Math.random() * this.maxVal) + this.yBase);
 
       newXVals.push(prevX);
       prevX += this.rectWidth + this.dist;
@@ -56,7 +55,7 @@ class Canvas extends Component {
     ctx.fill();
   }
 
-  handleNRectangles = (n) => {
+  changeNumRectangles = (n) => {
     document.getElementById('main_canvas').width = window.innerWidth - this.canvasXPadding;
     document.getElementById('main_canvas').height = (window.innerHeight * 3) / 4;
     this.calcRectangles(n);
@@ -76,27 +75,38 @@ class Canvas extends Component {
     }
   }
 
+  calcSortingSpeed(val) {
+    let max = constants.ALGO_SPEED_MAX;
+    let min = constants.ALGO_SPEED_MULTIPLIER;
+    let mult = constants.ALGO_SPEED_MULTIPLIER;
+    return (max-min-val)*mult + 1;
+  }
+
   //runs only once: after component mounts
   componentDidMount() {
-    this.handleNRectangles(this.numRectangles);
+    this.changeNumRectangles(this.numRectangles);
   }
 
   //runs after each time mapStateToProps is fired; e.g. runs after any the relevant store sections are updated
   componentDidUpdate(prevProps) {
+    if (this.props.algoSpeed != prevProps.algoSpeed) {
+      this.sortSpeedMs = this.calcSortingSpeed(this.props.algoSpeed);
+    }
+
     if (this.props.execAlgo === true) {
       this.updating = true;
       this.props.execAlgorithm(false);
     }
 
     if (this.updating) {
-      if (this.props.algoName == "Bubble Sort") {
+      if (this.props.algoName == constants.TEXT_BUBBLE_SORT) {
         this.swapRectangles(bubbleSort(this.yVals));
       }
-      this.updating = false
+      this.updating = false;
     }
 
     if (this.props.numRectangles != prevProps.numRectangles) {
-      this.handleNRectangles(this.props.numRectangles);
+      this.changeNumRectangles(this.props.numRectangles);
     }
   }
 
@@ -113,6 +123,7 @@ function mapStateToProps(state, ownProps) {
   return {
     algoName: state.algoOptions.algorithm,
     numRectangles: state.algoOptions.numElements,
+    algoSpeed: state.algoOptions.algorithmSpeed,
     execAlgo: state.algoOptions.execAlgorithm
   }
 }

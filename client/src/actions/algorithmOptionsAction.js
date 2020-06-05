@@ -12,10 +12,17 @@ export function setElementCount(num) {
     }
 };
 
+export function setAlgorithmSpeed(speed) {
+    return {
+        type: 'SET_ALGORITHM_SPEED',
+        payload: speed
+    }
+};
+
 export function execAlgorithm(tOrF) {
     return {
         type: 'EXEC_ALGORITHM',
         payload: tOrF
     }
 };
-  
+
