@@ -10,5 +10,6 @@ export default createStore (
 		algo: algorithmReducer
     }),
 	{},
-	applyMiddleware(logger)
+	/*applyMiddleware(logger)*/
+	undefined
 );

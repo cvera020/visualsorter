@@ -3,11 +3,11 @@ const webpack = require("webpack");
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 
 const paths = {
-  entryClient: path.resolve(__dirname,  "src", 'index.js'),
-  srcHtml: path.resolve(__dirname,  "src", "index.html"),
-  dest: path.resolve(__dirname, 'public'),
-  destHtml: path.resolve(__dirname, 'public', 'index.html'),
-  contentBase: path.join(__dirname, 'public')
+	entryClient: path.resolve(__dirname, "src", 'index.js'),
+	srcHtml: path.resolve(__dirname, "src", "index.html"),
+	dest: path.resolve(__dirname, 'public'),
+	destHtml: path.resolve(__dirname, 'public', 'index.html'),
+	contentBase: path.join(__dirname, 'public')
 };
 
 module.exports = {
@@ -48,21 +48,19 @@ module.exports = {
 			}
 		]
 	},
-	resolve: {extensions: ["*", ".js", ".jsx"]},
+	resolve: { extensions: ["*", ".js", ".jsx"] },
 	output: {
 		path: paths.dest,
 		publicPath: "/",
 		filename: "allbundle.js"
 	},
 	devServer: {
-    contentBase: paths.contentBase,
-    compress: true, // enable gzip compression
-    historyApiFallback: true, // true for index.html upon 404, object for multiple paths
-    hot: true, // hot module replacement. Depends on HotModuleReplacementPlugin
-    //host: 'localhost', // listen on all interfaces
-    https: false, // true for self-signed, object for cert authority
-    //noInfo: false, // only errors & warns on hot reload
-    port: 3000,
+		contentBase: paths.contentBase,
+		compress: true, // enable gzip compression
+		historyApiFallback: true, // true for index.html upon 404, object for multiple paths
+		hot: true, // hot module replacement. Depends on HotModuleReplacementPlugin
+		https: false, // true for self-signed, object for cert authority
+		port: 3000,
 		proxy: {
 			"/api": "http://localhost:4000"
 		}
@@ -70,9 +68,9 @@ module.exports = {
 	plugins: [
 		new webpack.NamedModulesPlugin(),
 		new webpack.HotModuleReplacementPlugin(),
-    new HtmlWebPackPlugin({
-      template: paths.srcHtml,
-      filename: paths.destHtml
-    })
+		new HtmlWebPackPlugin({
+			template: paths.srcHtml,
+			filename: paths.destHtml
+		})
 	]
 };
