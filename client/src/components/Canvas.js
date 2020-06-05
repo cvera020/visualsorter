@@ -1,72 +1,103 @@
 import React, { Component } from 'react'
 import { connect } from "react-redux"
+import bubbleSort from "../algorithms/bubbleSort";
+
+import { execAlgorithm } from "../actions/algorithmOptionsAction.js";
 
 class Canvas extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      numRectangles: 10, //default to 10
-      rectWidth: 0,
-      dist: 0, //distance between rectangles
-      xVals: [],
-      yVals: [],
-      maxVal: 100,
-      yStartPos: 20,
-      canvasXPadding: 5
-    }
+
+    };
+
+    this.updating = false;
+    this.sortSpeedMs = 20;
+
+    this.numRectangles = 10;
+    this.rectWidth = 0;
+    this.dist = 0;
+    this.xVals = [];
+    this.yVals = [];
+    this.maxVal = 300;
+    this.yStartPos = 20;
+    this.canvasXPadding = 20;
   }
 
-  calcRectangles(n) {
+  calcRectangles = (n) => {
     const canvas = document.getElementById('main_canvas');
 
     var width = canvas.width;
-    var padding = this.state.canvasXPadding;
+    var padding = this.canvasXPadding;
+    this.numRectangles = n;
+    this.rectWidth = (2 * width - 4 * padding) / (3 * n - 1);
+    this.dist = this.rectWidth / 2;
 
-    this.state.numRectangles = n;
-    this.state.rectWidth = (2 * width - 4 * padding) / (3 * n - 1);
-    this.state.dist = this.state.rectWidth / 2;
-
-    var prevX = this.state.canvasXPadding;
+    var prevX = padding;
     var newXVals = new Array();
     var newYVals = new Array();
-    var maxVal = this.state.maxVal;
     for (var i = 0; i < n; i++) {
-      newYVals.push(Math.random() * maxVal);
+      newYVals.push(Math.floor(Math.random() * this.maxVal));
 
       newXVals.push(prevX);
-      prevX += this.state.rectWidth + this.state.dist;
+      prevX += this.rectWidth + this.dist;
     }
-    this.state.xVals = newXVals;
-    this.state.yVals = newYVals;
+    this.xVals = newXVals;
+    this.yVals = newYVals;
   }
 
-  drawRectangles() {
+  drawRectangles = () => {
     const ctx = document.getElementById('main_canvas').getContext('2d');
-    var numRectangles = this.state.numRectangles;
-    var xVals = this.state.xVals;
-    var yStartPos = this.state.yStartPos;
-    var rWidth = this.state.rectWidth;
-    var yVals = this.state.yVals;
+    ctx.clearRect(0, 0, document.getElementById('main_canvas').width, document.getElementById('main_canvas').height);
 
-    for (var i = 0; i < numRectangles; i++) {
-      ctx.rect(xVals[i], yStartPos, rWidth, yVals[i]);
+    for (var i = 0; i < this.numRectangles; i++) {
+      ctx.fillRect(this.xVals[i], this.yStartPos, this.rectWidth, this.yVals[i]);
     }
     ctx.fill();
   }
 
-  handleNRectangles(n) {
-    document.getElementById('main_canvas').width = (window.innerWidth * 5) / 6;
+  handleNRectangles = (n) => {
+    document.getElementById('main_canvas').width = window.innerWidth - this.canvasXPadding;
     document.getElementById('main_canvas').height = (window.innerHeight * 3) / 4;
     this.calcRectangles(n);
     this.drawRectangles();
   }
 
-  componentDidMount() {
-    this.handleNRectangles(this.state.numRectangles);
+  async swapRectangles(swaps) {
+    for (var i = 0; i < swaps.length; i++) {
+      let index1 = swaps[i][0];
+      let index2 = swaps[i][1]
+      let val1 = this.yVals[index1];
+      let val2 = this.yVals[index2];
+      this.yVals[index1] = val2;
+      this.yVals[index2] = val1;
+      this.drawRectangles();
+      await new Promise(r2 => setTimeout(r2, this.sortSpeedMs));
+    }
   }
 
+  //runs only once: after component mounts
+  componentDidMount() {
+    this.handleNRectangles(this.numRectangles);
+  }
+
+  //runs after each time mapStateToProps is fired; e.g. runs after any the relevant store sections are updated
   componentDidUpdate(prevProps) {
-    this.handleNRectangles(this.props.numRectangles);
+    if (this.props.execAlgo === true) {
+      this.updating = true;
+      this.props.execAlgorithm(false);
+    }
+
+    if (this.updating) {
+      if (this.props.algoName == "Bubble Sort") {
+        this.swapRectangles(bubbleSort(this.yVals));
+      }
+      this.updating = false
+    }
+
+    if (this.props.numRectangles != prevProps.numRectangles) {
+      this.handleNRectangles(this.props.numRectangles);
+    }
   }
 
   render() {
@@ -80,8 +111,18 @@ class Canvas extends Component {
 
 function mapStateToProps(state, ownProps) {
   return {
-    numRectangles: state.algoOptions.numElements
+    algoName: state.algoOptions.algorithm,
+    numRectangles: state.algoOptions.numElements,
+    execAlgo: state.algoOptions.execAlgorithm
   }
 }
 
-export default connect(mapStateToProps, null)(Canvas)
+function mapDispatchToProps(dispatch) {
+  return {
+    execAlgorithm: (boolVal) => {
+      dispatch(execAlgorithm(boolVal))
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Canvas)

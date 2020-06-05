@@ -8,13 +8,13 @@ import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 
-import { setElementCount, setAlgorithm } from "../actions/algorithmOptionsAction.js"
+import { setElementCount, setAlgorithm, execAlgorithm } from "../actions/algorithmOptionsAction.js";
 
 class Navigation extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			sortingAlgorithm: '',
+			sortingAlgorithm: "Bubble Sort",
 			sortingSpeed: 1,
 			numElements: 10,
 			maxVal: 10
@@ -42,6 +42,7 @@ class Navigation extends React.Component {
 								<option>Bubble Sort</option>
 								<option>Selection Sort</option>
 							</Form.Control>
+							<Button onClick={this.props.execAlgorithm}>Sort!</Button>
 						</Form>
 					</Navbar.Collapse>
 				</Navbar>
@@ -57,6 +58,9 @@ function mapDispatchToProps(dispatch) {
 		},
 		setAlgorithm: (evt) => {
 			dispatch(setAlgorithm(evt.target.value));
+		},
+		execAlgorithm: (evt) => {
+			dispatch(execAlgorithm(evt !== undefined))
 		}
 	};
 };

@@ -11,4 +11,11 @@ export function setElementCount(num) {
         payload: num
     }
 };
+
+export function execAlgorithm(tOrF) {
+    return {
+        type: 'EXEC_ALGORITHM',
+        payload: tOrF
+    }
+};
   

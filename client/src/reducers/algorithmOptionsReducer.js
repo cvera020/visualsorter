@@ -1,6 +1,7 @@
 const algorithmOptionsReducer = (state = {
-    numElements: 0,
-    algorithm: "Bubble Sort"
+    algorithm: "Bubble Sort",
+    numElements: 10,
+    execAlgorithm: false
 }, action) => {
     switch (action.type) {
         case "SET_ALGORITHM":
@@ -14,6 +15,13 @@ const algorithmOptionsReducer = (state = {
                 ...state,
                 numElements: action.payload
             };
+            break;
+        case "EXEC_ALGORITHM":
+            state = {
+                ...state,
+                execAlgorithm: action.payload
+            };
+            break;
 
     }
     return state;
