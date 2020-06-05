@@ -9,7 +9,7 @@ class Canvas extends Component {
   constructor(props) {
     super(props)
 
-    this.updating = false;
+    this.startUpdating = false;
     this.stopUpdating = false;
     this.sortSpeedMs = this.calcSortingSpeed(constants.ALGO_SPEED_DEFAULT);
     this.numRectangles = 10;
@@ -62,8 +62,8 @@ class Canvas extends Component {
     this.drawRectangles();
   }
 
-  async swapRectangles(swaps) {
-    for (var i = 0; i < swaps.length; i++) {
+  async swapRectangles(swaps, callback) {
+    for (var i = 0; i < swaps.length && !this.stopUpdating; i++) {
       let index1 = swaps[i][0];
       let index2 = swaps[i][1]
       let val1 = this.yVals[index1];
@@ -73,6 +73,8 @@ class Canvas extends Component {
       this.drawRectangles();
       await new Promise(r2 => setTimeout(r2, this.sortSpeedMs));
     }
+    this.stopUpdating = true;
+    document.getElementById("sortExecuteButton").disabled = false;
   }
 
   calcSortingSpeed(val) {
@@ -94,19 +96,27 @@ class Canvas extends Component {
     }
 
     if (this.props.execAlgo === true) {
-      this.updating = true;
+      document.getElementById("sortExecuteButton").disabled = true;
+      this.startUpdating = true;
+      this.stopUpdating = false;
       this.props.execAlgorithm(false);
     }
 
-    if (this.updating) {
-      if (this.props.algoName == constants.TEXT_BUBBLE_SORT) {
-        this.swapRectangles(bubbleSort(this.yVals));
+    if (this.startUpdating) {
+      switch (this.props.algoName) {
+        case constants.TEXT_BUBBLE_SORT:
+          this.swapRectangles(bubbleSort(this.yVals));
+          break;
+        case constants.TEXT_SELECTION_SORT:
+          //TODO: add logic
+          break;
       }
-      this.updating = false;
+      this.startUpdating = false;
     }
 
     if (this.props.numRectangles != prevProps.numRectangles) {
       this.changeNumRectangles(this.props.numRectangles);
+      this.stopUpdating = true;
     }
   }
 
