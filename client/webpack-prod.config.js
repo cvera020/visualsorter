@@ -51,7 +51,7 @@ module.exports = {
 		new webpack.HotModuleReplacementPlugin(),
 		new HtmlWebPackPlugin({
 			template: path.resolve(__dirname, "src", "index.html"),
-			filename: path.resolve(__dirname, "dist", "index.html")
+			filename: path.resolve(__dirname, "../", "index.html")
 		})
 	]
 };
