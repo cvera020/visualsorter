@@ -3,12 +3,6 @@ import express from 'express';
 // initalize the express app
 const app = express();
 
-// example query
-// pool.query('SELECT * FROM users', (err, res) => {
-//   console.log(err, res)
-//   pool.end()
-// })
-
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "http://localhost:3000"); //allow this domain to access communicate with the server
   res.header('Access-Control-Allow-Credentials', true);

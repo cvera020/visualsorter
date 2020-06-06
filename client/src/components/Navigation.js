@@ -37,7 +37,7 @@ class Navigation extends React.Component {
 							<Form.Label className="custom-navigation-label-padding">Algorithm</Form.Label>
 							<Form.Control as="select" custom onChange={this.props.setAlgorithm}>
 								<option>{constants.TEXT_BUBBLE_SORT}</option>
-								<option>{constants.TEXT_SELECTION_SORT}</option>
+								<option>{constants.TEXT_MERGE_SORT}</option>
 							</Form.Control>
 							<Form.Label className="custom-navigation-label-padding">Speed</Form.Label>
 							<input type="range" id="sortSpeedRange" onChange={this.props.setAlgorithmSpeed}

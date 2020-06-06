@@ -45,14 +45,34 @@ class Canvas extends Component {
     this.yVals = newYVals;
   }
 
-  drawRectangles = () => {
+  drawRectangles = (i1 = 0, i2 = 0, stlye = constants.COLOR_DEFAULT) => {
     const ctx = document.getElementById('main_canvas').getContext('2d');
     ctx.clearRect(0, 0, document.getElementById('main_canvas').width, document.getElementById('main_canvas').height);
+    let lesser = i1 < i2? i1 : i2;
+    let greater = i1 >= i2? i1: i2;
+    let i = 0;
 
-    for (var i = 0; i < this.numRectangles; i++) {
+    ctx.fillStyle = constants.COLOR_DEFAULT;
+    for (; i < lesser; i++)
       ctx.fillRect(this.xVals[i], this.yStartPos, this.rectWidth, this.yVals[i]);
-    }
-    ctx.fill();
+    
+    ctx.fillStyle = stlye;
+    ctx.fillRect(this.xVals[i], this.yStartPos, this.rectWidth, this.yVals[i]);
+    ctx.fillStyle = constants.COLOR_DEFAULT;
+    i++;
+
+    for (; i < greater; i++)
+      ctx.fillRect(this.xVals[i], this.yStartPos, this.rectWidth, this.yVals[i]);
+
+    ctx.fillStyle = stlye;
+    ctx.fillRect(this.xVals[i], this.yStartPos, this.rectWidth, this.yVals[i]);
+    ctx.fillStyle = constants.COLOR_DEFAULT;
+    i++;
+
+    for (; i < this.numRectangles; i++)
+      ctx.fillRect(this.xVals[i], this.yStartPos, this.rectWidth, this.yVals[i]);
+    
+    ctx.fillStyle = constants.COLOR_DEFAULT;
   }
 
   changeNumRectangles = (n) => {
@@ -62,24 +82,36 @@ class Canvas extends Component {
     this.drawRectangles();
   }
 
-  async swapRectangles(swaps, callback) {
+  async swapRectangles(swaps) {
+    let isPreppedForSwap = false;
     for (var i = 0; i < swaps.length && !this.stopUpdating; i++) {
       let index1 = swaps[i][0];
-      let index2 = swaps[i][1]
+      let index2 = swaps[i][1];
+      let doSwap = swaps[i][2];
       let val1 = this.yVals[index1];
       let val2 = this.yVals[index2];
-      this.yVals[index1] = val2;
-      this.yVals[index2] = val1;
-      this.drawRectangles();
-      await new Promise(r2 => setTimeout(r2, this.sortSpeedMs));
+      let color = constants.COLOR_COMPARING;
+      if (doSwap) {
+        if (!isPreppedForSwap) {
+          i--;
+        } else {
+          this.yVals[index1] = val2;
+          this.yVals[index2] = val1;
+          color = constants.COLOR_SWAPPING;
+        }
+        isPreppedForSwap = !isPreppedForSwap;
+      }
+      this.drawRectangles(index1, index2, color);
+      await new Promise(r => setTimeout(r, this.sortSpeedMs));
     }
+    this.drawRectangles();
     this.stopUpdating = true;
     document.getElementById("sortExecuteButton").disabled = false;
   }
 
   calcSortingSpeed(val) {
     let max = constants.ALGO_SPEED_MAX;
-    let min = constants.ALGO_SPEED_MULTIPLIER;
+    let min = constants.ALGO_SPEED_MIN;
     let mult = constants.ALGO_SPEED_MULTIPLIER;
     return (max-min-val)*mult + 1;
   }
@@ -107,7 +139,7 @@ class Canvas extends Component {
         case constants.TEXT_BUBBLE_SORT:
           this.swapRectangles(bubbleSort(this.yVals));
           break;
-        case constants.TEXT_SELECTION_SORT:
+        case constants.TEXT_MERGE_SORT:
           //TODO: add logic
           break;
       }
