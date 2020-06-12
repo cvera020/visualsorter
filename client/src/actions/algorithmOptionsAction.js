@@ -26,3 +26,10 @@ export function execAlgorithm(tOrF) {
     }
 };
 
+export function randomizeElements(tOrF) {
+    return {
+        type: 'RANDOMIZE_ELEMENTS',
+        payload: tOrF
+    }
+}
+

@@ -4,7 +4,8 @@ const algorithmOptionsReducer = (state = {
     algorithm: constants.TEXT_BUBBLE_SORT,
     numElements: 10,
     algoSpeed: constants.ALGO_SPEED_DEFAULT,
-    execAlgorithm: false
+    execAlgorithm: false,
+    randomizeElements: false
 }, action) => {
     switch (action.type) {
         case "SET_ALGORITHM":
@@ -31,6 +32,11 @@ const algorithmOptionsReducer = (state = {
                 execAlgorithm: action.payload
             };
             break;
+        case "RANDOMIZE_ELEMENTS":
+            state = {
+                ...state,
+                randomizeElements: action.payload
+            }
 
     }
     return state;

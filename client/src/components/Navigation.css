@@ -1,9 +1,12 @@
-#sortSpeedRange {
-    width: 15%;
+#elementCountRange, #sortSpeedRange {
+    margin-left: 1%;
+    margin-right: 1%;
+    width: 12%;
 }
 
-#sortExecuteButton {
-    margin-left: 1%
+#sortExecuteButton, #randomizeElementsButton {
+    margin-left: 1%;
+    margin-right: 1%;
 }
 
 .custom-navigation-label-padding {

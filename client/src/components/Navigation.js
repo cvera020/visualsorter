@@ -1,11 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-//import axios from "axios";
 import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
-import { setElementCount, setAlgorithm, execAlgorithm, setAlgorithmSpeed } from "../actions/algorithmOptionsAction.js";
+import { setElementCount, setAlgorithm, execAlgorithm, setAlgorithmSpeed, randomizeElements } from "../actions/algorithmOptionsAction.js";
 
 import constants from "../constants";
 
@@ -26,26 +25,26 @@ class Navigation extends React.Component {
 					<Navbar.Toggle aria-controls="basic-navbar-nav" />
 					<Navbar.Collapse id="basic-navbar-nav" appear={true}>
 						<Form inline>
-							<Form.Label className="custom-navigation-label-padding">Array length</Form.Label>
-							<Form.Control as="select" custom onChange={this.props.setElementCount}>
-								<option>10</option>
-								<option>50</option>
-								<option>100</option>
-								<option>1000</option>
-								<option>2000</option>
-							</Form.Control>
+							<Form.Label className="custom-navigation-label-padding">Array Size</Form.Label>
+							<input type="range" id="elementCountRange" onChange={this.props.setElementCount}
+								step={constants.ARRAY_SIZE_STEP}
+								min={constants.ARRAY_SIZE_MIN}
+								max={constants.ARRAY_SIZE_MAX}
+								defaultValue={constants.ARRAY_SIZE_DEFAULT} />
+							<Form.Label className="custom-navigation-label-padding">Speed</Form.Label>
+							<input type="range" id="sortSpeedRange" onChange={this.props.setAlgorithmSpeed}
+								step="1"
+								min={constants.ALGO_SPEED_MIN}
+								max={constants.ALGO_SPEED_MAX}
+								defaultValue={constants.ALGO_SPEED_DEFAULT} />
 							<Form.Label className="custom-navigation-label-padding">Algorithm</Form.Label>
 							<Form.Control as="select" custom onChange={this.props.setAlgorithm}>
 								<option>{constants.TEXT_BUBBLE_SORT}</option>
 								<option>{constants.TEXT_MERGE_SORT}</option>
 							</Form.Control>
-							<Form.Label className="custom-navigation-label-padding">Speed</Form.Label>
-							<input type="range" id="sortSpeedRange" onChange={this.props.setAlgorithmSpeed}
-								step="1"
-								min={constants.ALGO_SPEED_MIN}
-								max={constants.ALGO_SPEED_MAX} 
-								defaultValue={constants.ALGO_SPEED_DEFAULT}/>
+
 							<Button id="sortExecuteButton" onClick={this.props.execAlgorithm}>Sort!</Button>
+							<Button id="randomizeElementsButton" onClick={this.props.randomizeElements}>Randomize!</Button>
 						</Form>
 					</Navbar.Collapse>
 				</Navbar>
@@ -67,6 +66,9 @@ function mapDispatchToProps(dispatch) {
 		},
 		execAlgorithm: (evt) => {
 			dispatch(execAlgorithm(evt != undefined))
+		},
+		randomizeElements: (evt) => {
+			dispatch(randomizeElements(evt != undefined))
 		}
 	};
 };
