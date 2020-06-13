@@ -2,9 +2,12 @@ import React, { Component } from 'react'
 import { connect } from "react-redux"
 import bubbleSort from "../algorithms/bubbleSort";
 import mergeSort from "../algorithms/mergeSort";
+import quickSort from '../algorithms/quickSort';
 
 import { execAlgorithm, randomizeElements } from "../actions/algorithmOptionsAction.js";
 import constants from "../constants";
+
+import ElementColorOption from '../util/ElementColorOption';
 
 class Canvas extends Component {
   constructor(props) {
@@ -18,7 +21,7 @@ class Canvas extends Component {
     this.dist = 0;
     this.xVals = [];
     this.yVals = [];
-    this.maxVal = window.innerHeight * 0.7;
+    this.maxVal = Math.max(window.innerHeight * 0.7, 200); //to avoid  zero-height elements, maxVal should be at least 200
     this.yStartPos = 20;
     this.canvasXPadding = 20;
     this.yBase = 2;
@@ -46,13 +49,22 @@ class Canvas extends Component {
     this.yVals = newYVals;
   }
 
-  drawRectangles = (i1 = 0, i2 = 0, stlye = constants.COLOR_DEFAULT) => {
+  drawRectangles = (colorOptionsArray = []) => {
     const ctx = document.getElementById('main_canvas').getContext('2d');
     ctx.clearRect(0, 0, document.getElementById('main_canvas').width, document.getElementById('main_canvas').height);
-    let lesser = i1 < i2? i1 : i2;
-    let greater = i1 >= i2? i1: i2;
-    let i = 0;
+    let n = 0;
+    for (let i = 0; i < this.numRectangles; i++) {
+      if (n < colorOptionsArray.length && colorOptionsArray[n].index == i) {
+        ctx.fillStyle = colorOptionsArray[n].color;
+        ctx.fillRect(this.xVals[i], this.yStartPos, this.rectWidth, this.yVals[i]);
+        ctx.fillStyle = constants.COLOR_DEFAULT;
+        ++n;
+      } else {
+        ctx.fillRect(this.xVals[i], this.yStartPos, this.rectWidth, this.yVals[i]);
+      }
+    }
 
+    /*
     ctx.fillStyle = constants.COLOR_DEFAULT;
     for (; i < lesser; i++)
       ctx.fillRect(this.xVals[i], this.yStartPos, this.rectWidth, this.yVals[i]);
@@ -74,6 +86,7 @@ class Canvas extends Component {
       ctx.fillRect(this.xVals[i], this.yStartPos, this.rectWidth, this.yVals[i]);
     
     ctx.fillStyle = constants.COLOR_DEFAULT;
+    */
   }
 
   changeNumRectangles = (n) => {
@@ -130,6 +143,9 @@ class Canvas extends Component {
           break;
         case constants.TEXT_MERGE_SORT:
           mergeSort(this.yVals, this);
+          break;
+        case constants.TEXT_QUICK_SORT:
+          quickSort(this.yVals, this);
           break;
       }
       this.startUpdating = false;

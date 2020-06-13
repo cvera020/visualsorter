@@ -1,4 +1,5 @@
 import constants from "../constants";
+import ElementColorOption from "../util/ElementColorOption";
 
 function mergeSort(array, ctxObj) {
     let arrCopy = array.slice(0);
@@ -41,7 +42,6 @@ function merge(array, start, mid, end, actionsToDraw) {
 }
 
 async function rotateRectangles(actions, component) {
-    
     for (var i = 0; i < actions.length && !component.stopUpdating; i++) {
         let start = actions[i][0];
         let end = actions[i][1];
@@ -54,10 +54,12 @@ async function rotateRectangles(actions, component) {
             component.yVals.splice(leftPtr, 0, component.yVals[rightPtr]);
             component.yVals.splice(rightPtr+1, 1);
             color = constants.COLOR_SWAPPING;
-        } else {
-
         }
-        component.drawRectangles(leftPtr, rightPtr, color);
+
+        let colorOptions = [];
+        colorOptions.push(new ElementColorOption(leftPtr, color));
+        colorOptions.push(new ElementColorOption(rightPtr, color));
+        component.drawRectangles(colorOptions);
         await new Promise(r => setTimeout(r, component.sortSpeedMs));
     }
 

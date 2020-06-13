@@ -41,6 +41,7 @@ class Navigation extends React.Component {
 							<Form.Control as="select" custom onChange={this.props.setAlgorithm}>
 								<option>{constants.TEXT_BUBBLE_SORT}</option>
 								<option>{constants.TEXT_MERGE_SORT}</option>
+								<option>{constants.TEXT_QUICK_SORT}</option>
 							</Form.Control>
 
 							<Button id="sortExecuteButton" onClick={this.props.execAlgorithm}>Sort!</Button>
